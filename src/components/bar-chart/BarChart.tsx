@@ -2,6 +2,7 @@ import React from 'react';
 import {
 	Bar,
 	CartesianGrid,
+	Cell,
 	Legend,
 	BarChart as ReBarChart,
 	ResponsiveContainer,
@@ -10,38 +11,90 @@ import {
 	YAxis,
 } from 'recharts';
 
-type ChartItem = {
+export type ChartItem = {
 	name: string;
 	value: number;
 };
 
 type BarChartProps = {
 	data: ChartItem[];
+	barName: string;
+	type?: 'difficulty' | 'category';
 };
 
-export const BarChart = React.memo(({ data }: BarChartProps) => {
-	return (
-		<div className='w-full h-64 bg-gray-800 rounded-lg p-4'>
-			<ResponsiveContainer width='100%' height='100%'>
-				<ReBarChart
-					data={data}
-					margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-				>
-					<CartesianGrid
-						horizontal={true}
-						vertical={false}
-						strokeDasharray='3'
-						stroke='#444'
-					/>
-					<XAxis dataKey='name' stroke='#fff' />
-					<YAxis stroke='#fff' />
-					<Tooltip
-						contentStyle={{ backgroundColor: '#222', borderRadius: '5px' }}
-					/>
-					<Legend wrapperStyle={{ color: '#fff' }} />
-					<Bar dataKey='value' fill='#4f46e5' />
-				</ReBarChart>
-			</ResponsiveContainer>
-		</div>
-	);
-});
+const difficultyColors: Record<string, string> = {
+	easy: '#22c55e',
+	medium: '#facc15',
+	hard: '#ef4444',
+};
+
+export const BarChart = React.memo(
+	({ data, barName, type = 'category' }: BarChartProps) => {
+		const sortedData = [...data].sort((a, b) => b.value - a.value);
+
+		return (
+			<div className='w-full h-128 bg-transparent rounded-lg border-2 border-[#3a3a3c] px-4 pt-0 pb-8'>
+				<ResponsiveContainer width='100%' height='100%'>
+					<ReBarChart
+						data={sortedData}
+						margin={{
+							top: 20,
+							right: 30,
+							left: type === 'category' ? 100 : -10,
+							bottom: -10,
+						}}
+					>
+						<Legend
+							wrapperStyle={{
+								color: '#fff',
+								display: 'flex',
+								justifyContent: 'center',
+								position: 'relative',
+								marginBottom: 15,
+							}}
+						/>
+						<CartesianGrid
+							horizontal
+							vertical={false}
+							strokeDasharray='3'
+							stroke='#444'
+						/>
+						<XAxis
+							dataKey='name'
+							stroke='#666668'
+							interval={0}
+							angle={type === 'category' ? -25 : 0}
+							textAnchor={type === 'category' ? 'end' : 'middle'}
+							height={type === 'category' ? 150 : 50}
+						/>
+						<YAxis
+							stroke='#666668'
+							allowDecimals={false}
+							domain={[0, 'dataMax']}
+						/>
+						<Tooltip
+							contentStyle={{
+								backgroundColor: '#19191c',
+								borderRadius: '5px',
+								color: '#666668',
+							}}
+						/>
+						<Bar
+							dataKey='value'
+							name={barName}
+							fill={type !== 'difficulty' ? '#48e054' : '#666668'}
+						>
+							{type === 'difficulty' &&
+								sortedData.map(entry => (
+									<Cell
+										key={entry.name}
+										fill={difficultyColors[entry.name] || '#48e054'}
+									/>
+								))}
+						</Bar>
+					</ReBarChart>
+				</ResponsiveContainer>
+			</div>
+		);
+	}
+);

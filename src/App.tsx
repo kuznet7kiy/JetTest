@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { BarChart } from './components/bar-chart/BarChart';
+import { getChartData } from './components/bar-chart/utils/getChartData';
 import { FilterSelector } from './components/filter-selector/FilterSelector';
 import { useQuestionsQuery } from './hooks/useQuestionsQuery';
 
@@ -12,62 +13,41 @@ export const App = React.memo(() => {
 
 	const categories: readonly string[] = React.useMemo(() => {
 		const categories = questions.map(question => question.category);
-
-		const uniqueCategories = new Set(categories);
-
-		return Array.from(uniqueCategories).toSorted((categoryA, categoryB) =>
-			categoryA.localeCompare(categoryB)
+		return Array.from(new Set(categories)).toSorted((a, b) =>
+			a.localeCompare(b)
 		);
 	}, [questions]);
 
-	const chartData: [string, number][] = React.useMemo(() => {
-		const counts: Record<string, number> = {};
+	const filteredQuestions = React.useMemo(() => {
+		if (!selectedCategory) return questions;
+		return questions.filter(q => q.category === selectedCategory);
+	}, [questions, selectedCategory]);
 
-		questions.forEach(q => {
-			counts[q.category] = (counts[q.category] || 0) + 1;
-		});
+	const difficultyData = React.useMemo(
+		() => getChartData(filteredQuestions, 'difficulty'),
+		[filteredQuestions]
+	);
 
-		return Object.entries(counts); // [category, count]
-	}, [questions]);
-
-	type ChartItem = {
-		name: string;
-		value: number;
-	};
-
-	const chartDataObjects: ChartItem[] = chartData.map(([name, value]) => ({
-		name,
-		value,
-	}));
-
-	// const filteredQuestions = React.useMemo(() => {
-	// 	if (selectedCategory == null) {
-	// 		return questions;
-	// 	}
-
-	// 	return questions.filter(question => question.category === selectedCategory);
-	// }, [questions, selectedCategory]);
+	const categoryData = React.useMemo(
+		() => getChartData(questions, 'category'),
+		[questions]
+	);
 
 	return (
 		<div className='container'>
-			<h1 className='header1'>
-				Welcome To Open Trivia DB
-				<br />
-				Visualization Tool
-			</h1>
+			<header className='Header'>
+				<h1 className='h1'>Trivia DB Visualization Tool</h1>
+			</header>
+
 			{isLoading ? (
 				<span>Loading...</span>
 			) : isError ? (
-				<span>
-					{error !== null ? error.message : 'An unknown error occurred.'}
-				</span>
+				<span>{error?.message ?? 'An unknown error occurred.'}</span>
 			) : (
-				<>
-					<div className='w-full flex flex-col items-center'>
-						<span>
-							Total questions: {questions.length}
-							<br />
-							Total Categories: {categories.length}
+				<div className='content'>
+					<div className='gap-10 flex flex-row justify-between mt-10 mb-4'>
+						<span className='text-[#666668] text-2xl font-medium'>
+							Distribution By Difficulty
 						</span>
 						<FilterSelector
 							isLoading={isLoading}
@@ -76,14 +56,41 @@ export const App = React.memo(() => {
 							categories={categories}
 						/>
 					</div>
-					<div className='w-full gap-10 max-w-[1400px] mt-10'>
+					<div className='w-full gap-10 max-w-[1400px]'>
 						<div className='flex align-middle'>
-							<BarChart data={chartDataObjects}/>
+							<BarChart
+								data={difficultyData}
+								barName='Questions by Difficulty'
+								type='difficulty'
+							/>
 						</div>
-
-						<div className='bg-blue-500 p-5'>Item 2</div>
 					</div>
-				</>
+
+					<div className='flex flex-col justify-between mt-10 mb-4'>
+						<span className='text-[#666668] text-2xl font-medium text-center'>
+							Distribution By Category
+						</span>
+						<div className='flex'>
+							<span className='text-[#666668] text-md font-medium'>
+								(Total Questions: {questions.length}
+							</span>
+							space
+							<span className='text-[#666668] text-md font-medium'>
+								Total Categories: {categories.length})
+							</span>
+						</div>
+					</div>
+
+					<div className='w-full gap-10 max-w-[1400px] pb-10'>
+						<div className='flex align-middle'>
+							<BarChart
+								data={categoryData}
+								barName='Number of Questions'
+								type='category'
+							/>
+						</div>
+					</div>
+				</div>
 			)}
 		</div>
 	);

@@ -53,7 +53,7 @@ export const App = React.memo(() => {
 				<span>{error?.message ?? 'An unknown error occurred.'}</span>
 			) : (
 				<div className='content'>
-					<div className='flex items-center flex-row gap-4 mt-10 mb-4'>
+					<div className='flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-10 mb-4 w-full max-w-[1400px]'>
 						<span className='text-[#666668] text-2xl font-medium'>
 							Distribution By Difficulty
 						</span>
@@ -75,17 +75,17 @@ export const App = React.memo(() => {
 						/>
 					</div>
 
-					<div className='gap-10 flex flex-row justify-between items-center mt-10 mb-4'>
-						<div className='flex flex-col justify-between'>
-							<span className='text-[#666668] text-2xl font-medium text-center'>
+					<div className='flex flex-col md:flex-row md:justify-between gap-4 mt-10 mb-4 w-full items-center max-w-[1400px]'>
+						<div className='flex flex-col items-center md:items-start'>
+							<span className='text-[#666668] text-2xl font-medium text-center md:text-left'>
 								Distribution By Category
 							</span>
-
-							<div className='flex justify-center gap-4 text-[#666668] text-md font-medium'>
-								<span>(Total Questions: {questionsByCategory.length}</span>
-								<span>Total Categories: {categories.length})</span>
+							<div className='flex flex-col md:flex-row justify-center md:justify-start gap-2 text-[#666668] text-md font-medium mt-1'>
+								<span>• Total Questions: {questionsByCategory.length}</span>
+								<span>• Total Categories: {categories.length}</span>
 							</div>
 						</div>
+
 						<FilterSelector
 							isLoading={isLoading}
 							selectedValue={selectedDifficulty}

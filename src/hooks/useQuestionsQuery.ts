@@ -4,8 +4,9 @@ import he from 'he';
 import { Question } from '../types/Question';
 
 /**
- * Schema for the entire response from the questions API
+ * Schema for the entire response from the trivia db questions API
  */
+
 const ResponseSchema = type({
 	response_code: 'number',
 	results: Question.array(),

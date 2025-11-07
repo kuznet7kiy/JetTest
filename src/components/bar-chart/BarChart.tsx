@@ -22,27 +22,23 @@ export const BarChart = React.memo(
 	({ data, barName, type = 'category' }: BarChartPropsType) => {
 		const sortedData = [...data].sort((a, b) => b.value - a.value);
 
+		const isMobile = window.innerWidth < 920;
+		const xAxisAngle = type === 'category' ? (isMobile ? -45 : -25) : 0;
+		const xAxisHeight = type === 'category' ? (isMobile ? 90 : 125) : 50;
+		const xAxisFontSize = isMobile ? 6 : 12;
+
 		return (
-			<div className='w-full h-128 bg-transparent rounded-lg border-2 border-[#3a3a3c] px-4 pt-0 pb-8'>
+			<div className='w-full h-112 sm:h-128 bg-transparent rounded-lg border-2 border-[#3a3a3c] px-2 sm:px-4 pt-2 sm:pt-0 pb-10 sm:pb-8'>
 				<ResponsiveContainer width='100%' height='100%'>
 					<ReBarChart
 						data={sortedData}
 						margin={{
 							top: 20,
-							right: 30,
-							left: type === 'category' ? 100 : -10,
-							bottom: -10,
+							right: 20,
+							left: type === 'category' ? (isMobile ? 0 : 100) : 0,
+							bottom: type === 'category' ? (isMobile ? 0 : 10) : -10,
 						}}
 					>
-						<Legend
-							wrapperStyle={{
-								color: '#fff',
-								display: 'flex',
-								justifyContent: 'center',
-								position: 'relative',
-								marginBottom: 15,
-							}}
-						/>
 						<CartesianGrid
 							horizontal
 							vertical={false}
@@ -53,9 +49,10 @@ export const BarChart = React.memo(
 							dataKey='name'
 							stroke='#666668'
 							interval={0}
-							angle={type === 'category' ? -25 : 0}
+							angle={xAxisAngle}
 							textAnchor={type === 'category' ? 'end' : 'middle'}
-							height={type === 'category' ? 150 : 50}
+							height={xAxisHeight}
+							tick={{ fontSize: xAxisFontSize }}
 						/>
 						<YAxis
 							stroke='#666668'
@@ -83,6 +80,16 @@ export const BarChart = React.memo(
 									/>
 								))}
 						</Bar>
+						<Legend
+							layout='horizontal'
+							verticalAlign='bottom'
+							align='center'
+							wrapperStyle={{
+								color: '#fff',
+								fontSize: isMobile ? 10 : 12,
+								marginTop: 10,
+							}}
+						/>
 					</ReBarChart>
 				</ResponsiveContainer>
 			</div>

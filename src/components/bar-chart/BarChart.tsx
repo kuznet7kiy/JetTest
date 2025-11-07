@@ -1,3 +1,4 @@
+import type { BarChartPropsType } from '@/types/BarChartProps';
 import React from 'react';
 import {
 	Bar,
@@ -11,17 +12,6 @@ import {
 	YAxis,
 } from 'recharts';
 
-export type ChartItem = {
-	name: string;
-	value: number;
-};
-
-type BarChartProps = {
-	data: ChartItem[];
-	barName: string;
-	type?: 'difficulty' | 'category';
-};
-
 const difficultyColors: Record<string, string> = {
 	easy: '#22c55e',
 	medium: '#facc15',
@@ -29,7 +19,7 @@ const difficultyColors: Record<string, string> = {
 };
 
 export const BarChart = React.memo(
-	({ data, barName, type = 'category' }: BarChartProps) => {
+	({ data, barName, type = 'category' }: BarChartPropsType) => {
 		const sortedData = [...data].sort((a, b) => b.value - a.value);
 
 		return (

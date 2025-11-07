@@ -53,7 +53,7 @@ export const App = React.memo(() => {
 				<span>{error?.message ?? 'An unknown error occurred.'}</span>
 			) : (
 				<div className='content'>
-					<div className='gap-10 flex flex-row justify-between mt-10 mb-4'>
+					<div className='flex items-center flex-row gap-4 mt-10 mb-4'>
 						<span className='text-[#666668] text-2xl font-medium'>
 							Distribution By Difficulty
 						</span>
@@ -67,26 +67,25 @@ export const App = React.memo(() => {
 						/>
 					</div>
 
-					<div className='w-full gap-10 max-w-[1400px]'>
-						<div className='flex align-middle'>
-							<BarChart
-								data={difficultyData}
-								barName='Questions by Difficulty'
-								type='difficulty'
-							/>
-						</div>
+					<div className='w-full max-w-[1400px]'>
+						<BarChart
+							data={difficultyData}
+							barName='Questions by Difficulty'
+							type='difficulty'
+						/>
 					</div>
 
-					<div className='flex flex-col justify-between mt-10 mb-4'>
-						<span className='text-[#666668] text-2xl font-medium text-center'>
-							Distribution By Category
-						</span>
+					<div className='gap-10 flex flex-row justify-between items-center mt-10 mb-4'>
+						<div className='flex flex-col justify-between'>
+							<span className='text-[#666668] text-2xl font-medium text-center'>
+								Distribution By Category
+							</span>
 
-						<div className='flex justify-center gap-2 text-[#666668] text-md font-medium'>
-							<span>(Total Questions: {questionsByCategory.length}</span>
-							<span>• Total Categories: {categories.length})</span>
+							<div className='flex justify-center gap-4 text-[#666668] text-md font-medium'>
+								<span>(Total Questions: {questionsByCategory.length}</span>
+								<span>Total Categories: {categories.length})</span>
+							</div>
 						</div>
-
 						<FilterSelector
 							isLoading={isLoading}
 							selectedValue={selectedDifficulty}
@@ -96,14 +95,12 @@ export const App = React.memo(() => {
 						/>
 					</div>
 
-					<div className='w-full gap-10 max-w-[1400px] pb-10'>
-						<div className='flex align-middle'>
-							<BarChart
-								data={categoryData}
-								barName='Number of Questions'
-								type='category'
-							/>
-						</div>
+					<div className='w-full max-w-[1400px] pb-10'>
+						<BarChart
+							data={categoryData}
+							barName='Number of Questions'
+							type='category'
+						/>
 					</div>
 				</div>
 			)}

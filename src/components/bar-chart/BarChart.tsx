@@ -68,6 +68,7 @@ export const BarChart = React.memo(
 								borderRadius: '5px',
 								color: '#666668',
 							}}
+							cursor={false}
 						/>
 						<Bar
 							dataKey='value'

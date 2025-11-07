@@ -43,7 +43,10 @@ function FilterSelectorInner<T extends string>({
 					<ChevronDownIcon className='w-4 h-4 opacity-80' />
 				</SelectTrigger>
 
-				<SelectContent className='min-w-var(--radix-select-trigger-width) z-10 backdrop-blur-2xl text-white'>
+				<SelectContent
+					position='popper'
+					className='min-w-var(--radix-select-trigger-width) z-10 backdrop-blur-2xl text-white'
+				>
 					<SelectGroup className='rounded-md border-2 border-[#80808053]'>
 						<SelectLabel className='text-gray-700 p-1'>{label}</SelectLabel>
 

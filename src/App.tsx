@@ -53,7 +53,7 @@ export const App = React.memo(() => {
 				<span>{error?.message ?? 'An unknown error occurred.'}</span>
 			) : (
 				<div className='content'>
-					<div className='gap-10 flex flex-row justify-between mt-10 mb-4'>
+					<div className='gap-10 flex flex-row justify-between items-center mt-10 mb-4'>
 						<span className='text-[#666668] text-2xl font-medium'>
 							Distribution By Difficulty
 						</span>
@@ -77,16 +77,17 @@ export const App = React.memo(() => {
 						</div>
 					</div>
 
-					<div className='flex flex-col justify-between mt-10 mb-4'>
-						<span className='text-[#666668] text-2xl font-medium text-center'>
-							Distribution By Category
-						</span>
+					<div className='gap-10 flex flex-row justify-between items-center mt-10 mb-4'>
+						<div className='flex flex-col gap-1 justify-between items-center'>
+							<span className='text-[#666668] text-2xl font-medium text-center'>
+								Distribution By Category
+							</span>
 
-						<div className='flex justify-center gap-2 text-[#666668] text-md font-medium'>
-							<span>(Total Questions: {questionsByCategory.length}</span>
-							<span>• Total Categories: {categories.length})</span>
+							<div className='flex justify-center gap-3 text-[#666668] text-md font-medium'>
+								<span>(Total Questions: {questionsByCategory.length}</span>
+								<span>Total Categories: {categories.length})</span>
+							</div>
 						</div>
-
 						<FilterSelector
 							isLoading={isLoading}
 							selectedValue={selectedDifficulty}

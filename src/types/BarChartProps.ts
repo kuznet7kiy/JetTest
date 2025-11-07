@@ -5,10 +5,10 @@ export const ChartItem = type({
 	value: 'number',
 });
 
-export const BarChartProps = type({
-	data: [ChartItem],
-	barName: 'string',
-	type: "'difficulty'|'category'?",
-});
+export type ChartItemType = typeof ChartItem.infer;
 
-export type BarChartPropsType = typeof BarChartProps.infer;
+export type BarChartPropsType = {
+	data: ChartItemType[];
+	barName: string;
+	type?: 'difficulty' | 'category';
+};

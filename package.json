@@ -2,7 +2,7 @@
 	"name": "jet-test",
 	"private": true,
 	"version": "0.0.0",
-	"homepage": "https://kuznet7kiy.github.io/jet-test",
+	"homepage": "https://kuznet7kiy.github.io/JetTest",
 	"type": "module",
 	"scripts": {
 		"dev": "vite",

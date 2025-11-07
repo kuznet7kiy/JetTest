@@ -81,7 +81,7 @@ export const App = React.memo(() => {
 								Distribution By Category
 							</span>
 							<div className='flex flex-col md:flex-row justify-center md:justify-start gap-2 text-[#666668] text-md font-medium mt-1'>
-								<span>• Total Questions: {questionsByCategory.length}</span>
+								<span>• Total Questions: {questions.length}</span>
 								<span>• Total Categories: {categories.length}</span>
 							</div>
 						</div>

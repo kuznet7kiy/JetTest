@@ -8,29 +8,37 @@ export const App = React.memo(() => {
 	const [selectedCategory, setSelectedCategory] = React.useState<string | null>(
 		null
 	);
+	const [selectedDifficulty, setSelectedDifficulty] = React.useState<
+		'easy' | 'medium' | 'hard' | null
+	>(null);
 
 	const { questions, isLoading, isError, error } = useQuestionsQuery();
 
-	const categories: readonly string[] = React.useMemo(() => {
-		const categories = questions.map(question => question.category);
-		return Array.from(new Set(categories)).toSorted((a, b) =>
-			a.localeCompare(b)
-		);
+	const categories = React.useMemo(() => {
+		const categories = questions.map(q => q.category);
+		return Array.from(new Set(categories)).sort((a, b) => a.localeCompare(b));
 	}, [questions]);
 
-	const filteredQuestions = React.useMemo(() => {
-		if (!selectedCategory) return questions;
-		return questions.filter(q => q.category === selectedCategory);
+	const questionsByCategory = React.useMemo(() => {
+		return selectedCategory
+			? questions.filter(q => q.category === selectedCategory)
+			: questions;
 	}, [questions, selectedCategory]);
 
+	const questionsByDifficulty = React.useMemo(() => {
+		return selectedDifficulty
+			? questions.filter(q => q.difficulty === selectedDifficulty)
+			: questions;
+	}, [questions, selectedDifficulty]);
+
 	const difficultyData = React.useMemo(
-		() => getChartData(filteredQuestions, 'difficulty'),
-		[filteredQuestions]
+		() => getChartData(questionsByCategory, 'difficulty'),
+		[questionsByCategory]
 	);
 
 	const categoryData = React.useMemo(
-		() => getChartData(questions, 'category'),
-		[questions]
+		() => getChartData(questionsByDifficulty, 'category'),
+		[questionsByDifficulty]
 	);
 
 	return (
@@ -49,13 +57,16 @@ export const App = React.memo(() => {
 						<span className='text-[#666668] text-2xl font-medium'>
 							Distribution By Difficulty
 						</span>
+
 						<FilterSelector
 							isLoading={isLoading}
-							selectedCategory={selectedCategory}
-							setSelectedCategory={setSelectedCategory}
-							categories={categories}
+							selectedValue={selectedCategory}
+							setSelectedValue={setSelectedCategory}
+							label='Categories'
+							options={categories}
 						/>
 					</div>
+
 					<div className='w-full gap-10 max-w-[1400px]'>
 						<div className='flex align-middle'>
 							<BarChart
@@ -70,15 +81,19 @@ export const App = React.memo(() => {
 						<span className='text-[#666668] text-2xl font-medium text-center'>
 							Distribution By Category
 						</span>
-						<div className='flex'>
-							<span className='text-[#666668] text-md font-medium'>
-								(Total Questions: {questions.length}
-							</span>
-							space
-							<span className='text-[#666668] text-md font-medium'>
-								Total Categories: {categories.length})
-							</span>
+
+						<div className='flex justify-center gap-2 text-[#666668] text-md font-medium'>
+							<span>(Total Questions: {questionsByCategory.length}</span>
+							<span>• Total Categories: {categories.length})</span>
 						</div>
+
+						<FilterSelector
+							isLoading={isLoading}
+							selectedValue={selectedDifficulty}
+							setSelectedValue={setSelectedDifficulty}
+							label='Difficulties'
+							options={['easy', 'medium', 'hard'] as const}
+						/>
 					</div>
 
 					<div className='w-full gap-10 max-w-[1400px] pb-10'>

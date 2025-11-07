@@ -11,55 +11,59 @@ import {
 } from '@radix-ui/react-select';
 import React from 'react';
 
-type FilterSelectorProps = {
+type FilterSelectorProps<T extends string> = {
 	isLoading: boolean;
-	selectedCategory: string | null;
-	setSelectedCategory: React.Dispatch<React.SetStateAction<string | null>>;
-	categories: readonly string[];
+	selectedValue: T | null;
+	setSelectedValue: React.Dispatch<React.SetStateAction<T | null>>;
+	label: string;
+	options: readonly T[];
 };
 
-export const FilterSelector = React.memo((props: FilterSelectorProps) => {
-	console.log('Filter rendered');
+function FilterSelectorInner<T extends string>({
+	isLoading,
+	selectedValue,
+	setSelectedValue,
+	label,
+	options,
+}: FilterSelectorProps<T>) {
 	return (
 		<div>
 			<Select
 				onValueChange={value =>
-					props.setSelectedCategory(value === 'all' ? null : value)
+					setSelectedValue(value === 'all' ? null : (value as T))
 				}
 			>
 				<SelectTrigger
 					className='min-w-1/2 flex items-center justify-between gap-2 rounded-md border border-[#80808053] bg-white/10 px-4 py-2 text-sm text-white backdrop-blur-md transition-colors hover:border-white/30 hover:bg-white/20'
-					disabled={props.isLoading}
+					disabled={isLoading}
 				>
-					<SelectValue placeholder='Select a category'>
-						{props.selectedCategory ?? 'All Categories'}
+					<SelectValue placeholder={`Select ${label}`}>
+						{selectedValue ?? `All ${label}`}
 					</SelectValue>
 					<ChevronDownIcon className='w-4 h-4 opacity-80' />
 				</SelectTrigger>
 
 				<SelectContent className='min-w-var(--radix-select-trigger-width) z-10 backdrop-blur-2xl text-white'>
 					<SelectGroup className='rounded-md border-2 border-[#80808053]'>
-						<SelectLabel className='text-gray-700 p-1'>
-							Question Categories
-						</SelectLabel>
+						<SelectLabel className='text-gray-700 p-1'>{label}</SelectLabel>
 
 						<SelectItem
 							value='all'
 							className='flex data-[state=checked]:bg-[#80808053] transition-colors px-3.5'
 						>
-							All Categories
+							All {label}
 							<SelectItemIndicator className='ml-auto flex items-center'>
 								<CheckIcon className='w-4 h-4 text-white/80' />
 							</SelectItemIndicator>
 						</SelectItem>
 
-						{props.categories.map((category, index) => (
+						{options.map((option, index) => (
 							<SelectItem
 								key={index}
-								value={category}
+								value={option}
 								className='flex data-[state=checked]:bg-[#80808053] transition-colors px-3.5'
 							>
-								{category}
+								{option.charAt(0).toUpperCase() + option.slice(1)}
 								<SelectItemIndicator className='ml-auto flex items-center'>
 									<CheckIcon className='w-4 h-4 text-white/80' />
 								</SelectItemIndicator>
@@ -70,26 +74,8 @@ export const FilterSelector = React.memo((props: FilterSelectorProps) => {
 			</Select>
 		</div>
 	);
-});
-
-{
-	/* <select
-	disabled={props.isLoading}
-	value={props.selectedCategory ?? 'all'}
-	onChange={event => {
-		const nextSelectedCategory =
-			event.currentTarget.value === 'all'
-				? null
-				: event.currentTarget.value;
-
-		props.setSelectedCategory(nextSelectedCategory);
-	}}
->
-	<option value='all'>All Categories</option>
-	{props.categories.map(category => (
-		<option key={category} value={category}>
-			{category}
-		</option>
-	))}
-</select> */
 }
+
+export const FilterSelector = React.memo(
+	FilterSelectorInner
+) as typeof FilterSelectorInner;
